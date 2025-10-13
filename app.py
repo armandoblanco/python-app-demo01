@@ -1,8 +1,10 @@
 from flask import Flask, render_template, request, jsonify
 
+# Crear una instancia de la aplicación Flask
 app = Flask(__name__)
 
 # Catálogo de productos (10 productos: 5 relojes de lujo y 5 joyas)
+# Cada producto tiene un ID, nombre, categoría, precio, descripción e imagen
 products = [
     {
         'id': 1,
@@ -88,21 +90,23 @@ products = [
 
 @app.route('/')
 def index():
-    """Página principal con catálogo completo"""
-    category = request.args.get('category', 'all')
-    search_query = request.args.get('search', '').lower()
+    """
+    Página principal con el catálogo completo de productos.
+    Permite filtrar por categoría y realizar búsquedas por nombre o descripción.
+    """
+    category = request.args.get('category', 'all')  # Categoría seleccionada (por defecto: 'all')
+    search_query = request.args.get('search', '').lower()  # Término de búsqueda (por defecto: vacío)
     
-    # Filtrar productos
+    # Filtrar productos según la categoría y el término de búsqueda
     filtered_products = products
-    
     if category != 'all':
         filtered_products = [p for p in filtered_products if p['category'] == category]
-    
     if search_query:
         filtered_products = [p for p in filtered_products 
                            if search_query in p['name'].lower() or 
                            search_query in p['description'].lower()]
     
+    # Renderizar la plantilla HTML con los productos filtrados
     return render_template('index.html', 
                          products=filtered_products, 
                          current_category=category,
@@ -110,27 +114,34 @@ def index():
 
 @app.route('/product/<int:product_id>')
 def product_detail(product_id):
-    """Página de detalle del producto"""
-    product = next((p for p in products if p['id'] == product_id), None)
+    """
+    Página de detalle de un producto específico.
+    Muestra información detallada del producto seleccionado.
+    """
+    product = next((p for p in products if p['id'] == product_id), None)  # Buscar producto por ID
     if product:
-        return render_template('product_detail.html', product=product)
-    return "Producto no encontrado", 404
+        return render_template('product_detail.html', product=product)  # Renderizar plantilla con el producto
+    return "Producto no encontrado", 404  # Mostrar error si el producto no existe
 
 @app.route('/api/search')
 def api_search():
-    """API endpoint para búsqueda dinámica"""
-    query = request.args.get('q', '').lower()
-    category = request.args.get('category', 'all')
+    """
+    API endpoint para realizar búsquedas dinámicas.
+    Devuelve una lista de productos que coinciden con la categoría y el término de búsqueda.
+    """
+    query = request.args.get('q', '').lower()  # Término de búsqueda
+    category = request.args.get('category', 'all')  # Categoría seleccionada
     
+    # Filtrar productos según la categoría y el término de búsqueda
     filtered = products
     if category != 'all':
         filtered = [p for p in filtered if p['category'] == category]
-    
     if query:
         filtered = [p for p in filtered 
                    if query in p['name'].lower() or query in p['description'].lower()]
     
-    return jsonify(filtered)
+    return jsonify(filtered)  # Devolver los productos filtrados en formato JSON
 
 if __name__ == '__main__':
+    # Ejecutar la aplicación en modo de producción
     app.run(debug=False, host='0.0.0.0', port=5000)
