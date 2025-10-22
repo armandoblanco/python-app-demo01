@@ -1,9 +1,11 @@
 from flask import Flask, render_template, request, jsonify
+from typing import List, Dict, Optional
 
 app = Flask(__name__)
 
 # Catálogo de productos (10 productos: 5 relojes de lujo y 5 joyas)
-products = [
+# Using a list for ordering, but will create a dict for fast lookups
+products_list = [
     {
         'id': 1,
         'name': 'Rolex Submariner',
@@ -86,32 +88,58 @@ products = [
     }
 ]
 
+# Create a dictionary for O(1) product lookups by ID
+products_dict = {product['id']: product for product in products_list}
+
+def filter_products(products: List[Dict], category: str = 'all', search_query: str = '') -> List[Dict]:
+    """
+    Filter products by category and search query efficiently.
+    
+    Args:
+        products: List of product dictionaries
+        category: Category filter ('all', 'watch', 'jewelry')
+        search_query: Search term to match in name or description
+    
+    Returns:
+        Filtered list of products
+    """
+    filtered = products
+    
+    # Apply category filter if specified
+    if category and category != 'all':
+        filtered = [p for p in filtered if p.get('category') == category]
+    
+    # Apply search filter if specified (strip whitespace first)
+    search_query = search_query.strip()
+    if search_query:
+        search_lower = search_query.lower()
+        filtered = [
+            p for p in filtered 
+            if search_lower in p.get('name', '').lower() 
+            or search_lower in p.get('description', '').lower()
+        ]
+    
+    return filtered
+
 @app.route('/')
 def index():
     """Página principal con catálogo completo"""
     category = request.args.get('category', 'all')
-    search_query = request.args.get('search', '').lower()
+    search_query = request.args.get('search', '').strip()
     
-    # Filtrar productos
-    filtered_products = products
-    
-    if category != 'all':
-        filtered_products = [p for p in filtered_products if p['category'] == category]
-    
-    if search_query:
-        filtered_products = [p for p in filtered_products 
-                           if search_query in p['name'].lower() or 
-                           search_query in p['description'].lower()]
+    # Use optimized filter function
+    filtered_products = filter_products(products_list, category, search_query)
     
     return render_template('index.html', 
                          products=filtered_products, 
                          current_category=category,
-                         search_query=search_query if search_query else '')
+                         search_query=search_query)
 
 @app.route('/product/<int:product_id>')
-def product_detail(product_id):
+def product_detail(product_id: int):
     """Página de detalle del producto"""
-    product = next((p for p in products if p['id'] == product_id), None)
+    # Use dictionary for O(1) lookup instead of O(n) search
+    product = products_dict.get(product_id)
     if product:
         return render_template('product_detail.html', product=product)
     return "Producto no encontrado", 404
@@ -119,16 +147,11 @@ def product_detail(product_id):
 @app.route('/api/search')
 def api_search():
     """API endpoint para búsqueda dinámica"""
-    query = request.args.get('q', '').lower()
+    query = request.args.get('q', '').strip()
     category = request.args.get('category', 'all')
     
-    filtered = products
-    if category != 'all':
-        filtered = [p for p in filtered if p['category'] == category]
-    
-    if query:
-        filtered = [p for p in filtered 
-                   if query in p['name'].lower() or query in p['description'].lower()]
+    # Use optimized filter function
+    filtered = filter_products(products_list, category, query)
     
     return jsonify(filtered)
 
