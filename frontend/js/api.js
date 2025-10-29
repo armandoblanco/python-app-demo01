@@ -13,15 +13,25 @@ class APIClient {
     async request(endpoint, options = {}) {
         const url = `${this.baseURL}${endpoint}`;
         
+        // Setup timeout with AbortController
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), CONFIG.REQUEST_TIMEOUT);
+        
         try {
+            // Only set Content-Type for requests with body
+            const headers = { ...options.headers };
+            if (options.method && ['POST', 'PUT', 'PATCH'].includes(options.method.toUpperCase())) {
+                headers['Content-Type'] = 'application/json';
+            }
+            
             const response = await fetch(url, {
                 ...options,
-                headers: {
-                    'Content-Type': 'application/json',
-                    ...options.headers
-                }
+                headers,
+                signal: controller.signal
             });
 
+            clearTimeout(timeoutId);
+            
             const data = await response.json();
 
             if (!response.ok) {
@@ -30,6 +40,10 @@ class APIClient {
 
             return data;
         } catch (error) {
+            clearTimeout(timeoutId);
+            if (error.name === 'AbortError') {
+                throw new Error('Request timeout');
+            }
             console.error('API request failed:', error);
             throw error;
         }

@@ -124,13 +124,6 @@ function setupEventListeners() {
 }
 
 /**
- * Format price with thousands separator
- */
-function formatPrice(price) {
-    return price.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-}
-
-/**
  * Show error message
  */
 function showError(message) {

@@ -2,13 +2,7 @@
 Tests for the backend API
 """
 import pytest
-import sys
-import os
-
-# Add backend directory to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'backend'))
-
-from api import app, products
+from backend.api import app, products
 
 @pytest.fixture
 def client():
