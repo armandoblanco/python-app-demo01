@@ -125,10 +125,12 @@ def get_products():
             'data': filtered_products,
             'count': len(filtered_products)
         }), 200
-    except Exception as e:
+    except Exception:
+        # Log the error internally but don't expose stack trace
+        app.logger.error('Error fetching products', exc_info=True)
         return jsonify({
             'success': False,
-            'error': str(e)
+            'error': 'Internal server error while fetching products'
         }), 500
 
 @app.route('/api/products/<int:product_id>', methods=['GET'])
@@ -147,10 +149,12 @@ def get_product(product_id):
                 'success': False,
                 'error': 'Product not found'
             }), 404
-    except Exception as e:
+    except Exception:
+        # Log the error internally but don't expose stack trace
+        app.logger.error('Error fetching product by ID', exc_info=True)
         return jsonify({
             'success': False,
-            'error': str(e)
+            'error': 'Internal server error while fetching product'
         }), 500
 
 @app.route('/api/categories', methods=['GET'])
