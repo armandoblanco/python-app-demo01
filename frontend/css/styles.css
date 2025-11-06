@@ -1,3 +1,9 @@
+:root {
+    --microsoft-blue: #0078D4;
+    --microsoft-blue-dark: #005a9e;
+    --microsoft-blue-light: #50a8e8;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -93,14 +99,14 @@ h1 {
 }
 
 .filter-btn:hover {
-    background: #0078D4;
+    background: var(--microsoft-blue-light);
     color: #ffffff;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 120, 212, 0.3);
 }
 
 .filter-btn.active {
-    background: #0078D4;
+    background: var(--microsoft-blue);
     color: #ffffff;
 }
 
@@ -335,8 +341,8 @@ h1 {
 }
 
 .btn-primary:hover {
-    background: #005a9e;
-    border-color: #005a9e;
+    background: var(--microsoft-blue-dark);
+    border-color: var(--microsoft-blue-dark);
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0, 120, 212, 0.4);
 }
