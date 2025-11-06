@@ -1,3 +1,9 @@
+:root {
+    --microsoft-blue: #0078D4;
+    --microsoft-blue-dark: #005a9e;
+    --microsoft-blue-light: #50a8e8;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -15,8 +21,8 @@ body {
 header {
     background: linear-gradient(90deg, #000000 0%, #1a1a1a 100%);
     padding: 30px 0;
-    border-bottom: 2px solid #FFD700;
-    box-shadow: 0 4px 6px rgba(255, 215, 0, 0.1);
+    border-bottom: 2px solid var(--microsoft-blue);
+    box-shadow: 0 4px 6px rgba(0, 120, 212, 0.1);
 }
 
 .container {
@@ -26,7 +32,7 @@ header {
 }
 
 h1 {
-    color: #FFD700;
+    color: var(--microsoft-blue);
     text-align: center;
     font-size: 3em;
     margin-bottom: 10px;
@@ -49,7 +55,7 @@ h1 {
     border-radius: 10px;
     margin: 30px auto;
     max-width: 1000px;
-    border: 1px solid #FFD700;
+    border: 1px solid var(--microsoft-blue);
 }
 
 .search-container {
@@ -60,7 +66,7 @@ h1 {
     width: 100%;
     padding: 15px;
     font-size: 1.1em;
-    border: 2px solid #FFD700;
+    border: 2px solid var(--microsoft-blue);
     border-radius: 5px;
     background: #000000;
     color: #ffffff;
@@ -69,8 +75,8 @@ h1 {
 
 .search-box:focus {
     outline: none;
-    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-    border-color: #FFD700;
+    box-shadow: 0 0 10px rgba(0, 120, 212, 0.5);
+    border-color: var(--microsoft-blue);
 }
 
 .filter-buttons {
@@ -83,7 +89,7 @@ h1 {
 .filter-btn {
     padding: 12px 30px;
     font-size: 1em;
-    border: 2px solid #FFD700;
+    border: 2px solid var(--microsoft-blue);
     background: #000000;
     color: #ffffff;
     cursor: pointer;
@@ -93,15 +99,15 @@ h1 {
 }
 
 .filter-btn:hover {
-    background: #FFD700;
-    color: #000000;
+    background: var(--microsoft-blue-light);
+    color: #ffffff;
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(255, 215, 0, 0.3);
+    box-shadow: 0 4px 8px rgba(0, 120, 212, 0.3);
 }
 
 .filter-btn.active {
-    background: #FFD700;
-    color: #000000;
+    background: var(--microsoft-blue);
+    color: #ffffff;
 }
 
 /* Products Grid */
@@ -114,7 +120,7 @@ h1 {
 
 .product-card {
     background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
-    border: 2px solid #FFD700;
+    border: 2px solid var(--microsoft-blue);
     border-radius: 10px;
     padding: 20px;
     transition: all 0.3s;
@@ -126,8 +132,8 @@ h1 {
 
 .product-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(255, 215, 0, 0.3);
-    border-color: #ffffff;
+    box-shadow: 0 10px 25px rgba(0, 120, 212, 0.3);
+    border-color: var(--microsoft-blue-light);
 }
 
 .product-image {
@@ -142,8 +148,8 @@ h1 {
 .product-category {
     display: inline-block;
     padding: 5px 15px;
-    background: #FFD700;
-    color: #000000;
+    background: var(--microsoft-blue);
+    color: #ffffff;
     border-radius: 20px;
     font-size: 0.85em;
     font-weight: bold;
@@ -153,7 +159,7 @@ h1 {
 
 .product-name {
     font-size: 1.4em;
-    color: #FFD700;
+    color: var(--microsoft-blue);
     margin-bottom: 10px;
     font-weight: bold;
 }
@@ -173,14 +179,14 @@ h1 {
 
 .price-label {
     font-size: 0.6em;
-    color: #FFD700;
+    color: var(--microsoft-blue);
 }
 
 /* Loading and No Results */
 .loading, .no-results {
     text-align: center;
     padding: 60px 20px;
-    color: #FFD700;
+    color: var(--microsoft-blue);
     font-size: 1.5em;
     grid-column: 1 / -1;
 }
@@ -199,24 +205,24 @@ h1 {
     margin: 30px 0;
     padding: 12px 30px;
     background: #000000;
-    color: #FFD700;
+    color: var(--microsoft-blue);
     text-decoration: none;
-    border: 2px solid #FFD700;
+    border: 2px solid var(--microsoft-blue);
     border-radius: 5px;
     font-weight: bold;
     transition: all 0.3s;
 }
 
 .back-button:hover {
-    background: #FFD700;
-    color: #000000;
+    background: var(--microsoft-blue);
+    color: #ffffff;
     transform: translateX(-5px);
 }
 
 /* Product Detail Section */
 .product-detail {
     background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
-    border: 2px solid #FFD700;
+    border: 2px solid var(--microsoft-blue);
     border-radius: 10px;
     padding: 40px;
     margin: 30px 0;
@@ -234,8 +240,8 @@ h1 {
     width: 100%;
     height: auto;
     border-radius: 10px;
-    border: 3px solid #FFD700;
-    box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
+    border: 3px solid var(--microsoft-blue);
+    box-shadow: 0 10px 30px rgba(0, 120, 212, 0.2);
 }
 
 .product-info {
@@ -273,18 +279,18 @@ h1 {
     padding: 20px;
     background: rgba(0, 0, 0, 0.3);
     border-radius: 5px;
-    border-left: 4px solid #FFD700;
+    border-left: 4px solid var(--microsoft-blue);
 }
 
 .product-features {
     background: rgba(0, 0, 0, 0.3);
     padding: 25px;
     border-radius: 5px;
-    border: 1px solid #FFD700;
+    border: 1px solid var(--microsoft-blue);
 }
 
 .product-features h3 {
-    color: #FFD700;
+    color: var(--microsoft-blue);
     margin-bottom: 15px;
     font-size: 1.5em;
 }
@@ -296,7 +302,7 @@ h1 {
 
 .product-features li {
     padding: 10px 0;
-    border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+    border-bottom: 1px solid rgba(0, 120, 212, 0.2);
     color: #ffffff;
 }
 
@@ -306,7 +312,7 @@ h1 {
 
 .product-features li::before {
     content: "✓ ";
-    color: #FFD700;
+    color: var(--microsoft-blue);
     font-weight: bold;
     margin-right: 10px;
 }
@@ -321,7 +327,7 @@ h1 {
     flex: 1;
     padding: 18px;
     font-size: 1.1em;
-    border: 2px solid #FFD700;
+    border: 2px solid var(--microsoft-blue);
     border-radius: 5px;
     cursor: pointer;
     transition: all 0.3s;
@@ -330,36 +336,36 @@ h1 {
 }
 
 .btn-primary {
-    background: #FFD700;
-    color: #000000;
+    background: var(--microsoft-blue);
+    color: #ffffff;
 }
 
 .btn-primary:hover {
-    background: #ffffff;
-    border-color: #ffffff;
+    background: var(--microsoft-blue-dark);
+    border-color: var(--microsoft-blue-dark);
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+    box-shadow: 0 5px 15px rgba(0, 120, 212, 0.4);
 }
 
 .btn-secondary {
     background: transparent;
-    color: #FFD700;
+    color: var(--microsoft-blue);
 }
 
 .btn-secondary:hover {
-    background: #FFD700;
-    color: #000000;
+    background: var(--microsoft-blue);
+    color: #ffffff;
     transform: translateY(-2px);
 }
 
 /* Footer */
 footer {
     background: #000000;
-    color: #FFD700;
+    color: var(--microsoft-blue);
     text-align: center;
     padding: 30px 0;
     margin-top: 50px;
-    border-top: 2px solid #FFD700;
+    border-top: 2px solid var(--microsoft-blue);
 }
 
 footer p {
