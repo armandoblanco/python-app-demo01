@@ -133,7 +133,7 @@ h1 {
 .product-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 25px rgba(0, 120, 212, 0.3);
-    border-color: var(--microsoft-blue);
+    border-color: var(--microsoft-blue-light);
 }
 
 .product-image {
