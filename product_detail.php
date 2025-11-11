@@ -1,9 +1,32 @@
+<?php
+// Include products data
+require_once 'products.php';
+
+// Get product ID from URL
+$product_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+// Find product by ID
+$product = null;
+foreach ($products as $p) {
+    if ($p['id'] === $product_id) {
+        $product = $p;
+        break;
+    }
+}
+
+// If product not found, show 404
+if (!$product) {
+    header("HTTP/1.0 404 Not Found");
+    echo "Producto no encontrado";
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ product.name }} - Luxury Collection</title>
+    <title><?php echo htmlspecialchars($product['name']); ?> - Luxury Collection</title>
     <style>
         * {
             margin: 0;
@@ -263,49 +286,47 @@
     </header>
 
     <main class="container">
-        <a href="/" class="back-button">← Volver al Catálogo</a>
+        <a href="index.php" class="back-button">← Volver al Catálogo</a>
 
         <div class="product-detail">
             <div class="product-image-container">
-                <img src="{{ product.image }}" alt="{{ product.name }}" class="product-image">
+                <img src="<?php echo htmlspecialchars($product['image']); ?>" 
+                     alt="<?php echo htmlspecialchars($product['name']); ?>" 
+                     class="product-image">
             </div>
 
             <div class="product-info">
                 <span class="product-category">
-                    {% if product.category == 'watch' %}
-                        ⌚ RELOJ DE LUJO
-                    {% else %}
-                        💎 JOYERÍA EXCLUSIVA
-                    {% endif %}
+                    <?php echo $product['category'] === 'watch' ? '⌚ RELOJ DE LUJO' : '💎 JOYERÍA EXCLUSIVA'; ?>
                 </span>
 
-                <h2 class="product-name">{{ product.name }}</h2>
+                <h2 class="product-name"><?php echo htmlspecialchars($product['name']); ?></h2>
 
                 <div class="product-price">
                     <span class="price-label">PRECIO EN USD</span>
-                    ${{ "{:,.2f}".format(product.price) }}
+                    $<?php echo number_format($product['price'], 2); ?>
                 </div>
 
                 <div class="product-description">
-                    <p>{{ product.description }}</p>
+                    <p><?php echo htmlspecialchars($product['description']); ?></p>
                 </div>
 
                 <div class="product-features">
                     <h3>Características Destacadas</h3>
                     <ul>
-                        {% if product.category == 'watch' %}
+                        <?php if ($product['category'] === 'watch'): ?>
                             <li>Mecanismo de precisión suiza</li>
                             <li>Cristal de zafiro resistente a rayones</li>
                             <li>Resistencia al agua</li>
                             <li>Garantía internacional de 2 años</li>
                             <li>Caja de presentación de lujo incluida</li>
-                        {% else %}
+                        <?php else: ?>
                             <li>Materiales de la más alta calidad</li>
                             <li>Certificado de autenticidad</li>
                             <li>Diseño exclusivo y único</li>
                             <li>Garantía de por vida</li>
                             <li>Estuche de presentación elegante</li>
-                        {% endif %}
+                        <?php endif; ?>
                     </ul>
                 </div>
 

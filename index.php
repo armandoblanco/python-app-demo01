@@ -1,3 +1,30 @@
+<?php
+// Include products data
+require_once 'products.php';
+
+// Get filter parameters
+$category = isset($_GET['category']) ? $_GET['category'] : 'all';
+$search_query = isset($_GET['search']) ? strtolower($_GET['search']) : '';
+
+// Filter products
+$filtered_products = $products;
+
+if ($category !== 'all') {
+    $filtered_products = array_filter($filtered_products, function($p) use ($category) {
+        return $p['category'] === $category;
+    });
+}
+
+if ($search_query !== '') {
+    $filtered_products = array_filter($filtered_products, function($p) use ($search_query) {
+        return strpos(strtolower($p['name']), $search_query) !== false ||
+               strpos(strtolower($p['description']), $search_query) !== false;
+    });
+}
+
+// Reset array keys
+$filtered_products = array_values($filtered_products);
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -241,18 +268,18 @@
                        id="searchBox" 
                        class="search-box" 
                        placeholder="🔍 Buscar relojes y joyas de lujo..." 
-                       value="{{ search_query }}">
+                       value="<?php echo htmlspecialchars($search_query); ?>">
             </div>
             <div class="filter-buttons">
-                <button class="filter-btn {% if current_category == 'all' %}active{% endif %}" 
+                <button class="filter-btn <?php echo $category === 'all' ? 'active' : ''; ?>" 
                         onclick="filterCategory('all')">
                     Todos los Productos
                 </button>
-                <button class="filter-btn {% if current_category == 'watch' %}active{% endif %}" 
+                <button class="filter-btn <?php echo $category === 'watch' ? 'active' : ''; ?>" 
                         onclick="filterCategory('watch')">
                     Relojes de Lujo
                 </button>
-                <button class="filter-btn {% if current_category == 'jewelry' %}active{% endif %}" 
+                <button class="filter-btn <?php echo $category === 'jewelry' ? 'active' : ''; ?>" 
                         onclick="filterCategory('jewelry')">
                     Joyas Exclusivas
                 </button>
@@ -260,32 +287,30 @@
         </div>
 
         <div class="products-grid" id="productsGrid">
-            {% if products %}
-                {% for product in products %}
-                <a href="/product/{{ product.id }}" class="product-card">
-                    <img src="{{ product.image }}" alt="{{ product.name }}" class="product-image">
+            <?php if (count($filtered_products) > 0): ?>
+                <?php foreach ($filtered_products as $product): ?>
+                <a href="product_detail.php?id=<?php echo $product['id']; ?>" class="product-card">
+                    <img src="<?php echo htmlspecialchars($product['image']); ?>" 
+                         alt="<?php echo htmlspecialchars($product['name']); ?>" 
+                         class="product-image">
                     <span class="product-category">
-                        {% if product.category == 'watch' %}
-                            ⌚ Reloj
-                        {% else %}
-                            💎 Joya
-                        {% endif %}
+                        <?php echo $product['category'] === 'watch' ? '⌚ Reloj' : '💎 Joya'; ?>
                     </span>
-                    <h3 class="product-name">{{ product.name }}</h3>
-                    <p class="product-description">{{ product.description }}</p>
+                    <h3 class="product-name"><?php echo htmlspecialchars($product['name']); ?></h3>
+                    <p class="product-description"><?php echo htmlspecialchars($product['description']); ?></p>
                     <p class="product-price">
-                        <span class="price-label">USD</span> ${{ "{:,.2f}".format(product.price) }}
+                        <span class="price-label">USD</span> $<?php echo number_format($product['price'], 2); ?>
                     </p>
                 </a>
-                {% endfor %}
-            {% else %}
+                <?php endforeach; ?>
+            <?php else: ?>
                 <div class="no-results">
                     <p>No se encontraron productos que coincidan con tu búsqueda.</p>
                     <p style="font-size: 0.8em; margin-top: 20px; color: #ffffff;">
                         Intenta con otros términos o explora todas las categorías.
                     </p>
                 </div>
-            {% endif %}
+            <?php endif; ?>
         </div>
     </main>
 
@@ -305,15 +330,16 @@
             clearTimeout(searchTimeout);
             searchTimeout = setTimeout(() => {
                 const query = searchBox.value;
-                const category = new URLSearchParams(window.location.search).get('category') || 'all';
+                const urlParams = new URLSearchParams(window.location.search);
+                const category = urlParams.get('category') || 'all';
                 
                 if (query === '' && category === 'all') {
-                    window.location.href = '/';
+                    window.location.href = 'index.php';
                 } else {
                     const params = new URLSearchParams();
                     if (category !== 'all') params.append('category', category);
                     if (query) params.append('search', query);
-                    window.location.href = '/?' + params.toString();
+                    window.location.href = 'index.php?' + params.toString();
                 }
             }, 500);
         });
@@ -330,7 +356,7 @@
                 params.append('search', searchQuery);
             }
             
-            window.location.href = '/?' + params.toString();
+            window.location.href = 'index.php?' + params.toString();
         }
 
         // Efecto de scroll suave
