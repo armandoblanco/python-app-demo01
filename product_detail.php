@@ -1,0 +1,352 @@
+<?php
+// Include products data
+require_once 'products.php';
+
+// Get product ID from URL
+$product_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+// Find product by ID
+$product = null;
+foreach ($products as $p) {
+    if ($p['id'] === $product_id) {
+        $product = $p;
+        break;
+    }
+}
+
+// If product not found, show 404
+if (!$product) {
+    header("HTTP/1.0 404 Not Found");
+    echo "Producto no encontrado";
+    exit;
+}
+?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo htmlspecialchars($product['name']); ?> - Luxury Collection</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(90deg, #000000 0%, #1a1a1a 100%);
+            padding: 30px 0;
+            border-bottom: 2px solid #FFD700;
+            box-shadow: 0 4px 6px rgba(255, 215, 0, 0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        h1 {
+            color: #FFD700;
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #ffffff;
+            font-size: 1.1em;
+            font-style: italic;
+        }
+
+        /* Back Button */
+        .back-button {
+            display: inline-block;
+            margin: 30px 0;
+            padding: 12px 30px;
+            background: #000000;
+            color: #FFD700;
+            text-decoration: none;
+            border: 2px solid #FFD700;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .back-button:hover {
+            background: #FFD700;
+            color: #000000;
+            transform: translateX(-5px);
+        }
+
+        /* Product Detail Section */
+        .product-detail {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            border: 2px solid #FFD700;
+            border-radius: 10px;
+            padding: 40px;
+            margin: 30px 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .product-image-container {
+            position: relative;
+        }
+
+        .product-image {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            border: 3px solid #FFD700;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
+        }
+
+        .product-info {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .product-category {
+            display: inline-block;
+            padding: 8px 20px;
+            background: #FFD700;
+            color: #000000;
+            border-radius: 25px;
+            font-size: 0.9em;
+            font-weight: bold;
+            text-transform: uppercase;
+            width: fit-content;
+        }
+
+        .product-name {
+            font-size: 2.5em;
+            color: #FFD700;
+            font-weight: bold;
+            margin: 10px 0;
+            line-height: 1.2;
+        }
+
+        .product-price {
+            font-size: 3em;
+            color: #ffffff;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .price-label {
+            font-size: 0.5em;
+            color: #FFD700;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .product-description {
+            color: #cccccc;
+            font-size: 1.2em;
+            line-height: 1.8;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            border-left: 4px solid #FFD700;
+        }
+
+        .product-features {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 25px;
+            border-radius: 5px;
+            border: 1px solid #FFD700;
+        }
+
+        .product-features h3 {
+            color: #FFD700;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .product-features ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .product-features li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+            color: #ffffff;
+        }
+
+        .product-features li:last-child {
+            border-bottom: none;
+        }
+
+        .product-features li::before {
+            content: "✓ ";
+            color: #FFD700;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 18px;
+            font-size: 1.1em;
+            border: 2px solid #FFD700;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: #FFD700;
+            color: #000000;
+        }
+
+        .btn-primary:hover {
+            background: #ffffff;
+            border-color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #FFD700;
+        }
+
+        .btn-secondary:hover {
+            background: #FFD700;
+            color: #000000;
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        footer {
+            background: #000000;
+            color: #FFD700;
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 50px;
+            border-top: 2px solid #FFD700;
+        }
+
+        footer p {
+            margin: 5px 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 968px) {
+            .product-detail {
+                grid-template-columns: 1fr;
+                padding: 25px;
+            }
+
+            .product-name {
+                font-size: 2em;
+            }
+
+            .product-price {
+                font-size: 2.5em;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>✨ LUXURY COLLECTION ✨</h1>
+            <p class="subtitle">Detalle del Producto</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <a href="index.php" class="back-button">← Volver al Catálogo</a>
+
+        <div class="product-detail">
+            <div class="product-image-container">
+                <img src="<?php echo htmlspecialchars($product['image']); ?>" 
+                     alt="<?php echo htmlspecialchars($product['name']); ?>" 
+                     class="product-image">
+            </div>
+
+            <div class="product-info">
+                <span class="product-category">
+                    <?php echo $product['category'] === 'watch' ? '⌚ RELOJ DE LUJO' : '💎 JOYERÍA EXCLUSIVA'; ?>
+                </span>
+
+                <h2 class="product-name"><?php echo htmlspecialchars($product['name']); ?></h2>
+
+                <div class="product-price">
+                    <span class="price-label">PRECIO EN USD</span>
+                    $<?php echo number_format($product['price'], 2); ?>
+                </div>
+
+                <div class="product-description">
+                    <p><?php echo htmlspecialchars($product['description']); ?></p>
+                </div>
+
+                <div class="product-features">
+                    <h3>Características Destacadas</h3>
+                    <ul>
+                        <?php if ($product['category'] === 'watch'): ?>
+                            <li>Mecanismo de precisión suiza</li>
+                            <li>Cristal de zafiro resistente a rayones</li>
+                            <li>Resistencia al agua</li>
+                            <li>Garantía internacional de 2 años</li>
+                            <li>Caja de presentación de lujo incluida</li>
+                        <?php else: ?>
+                            <li>Materiales de la más alta calidad</li>
+                            <li>Certificado de autenticidad</li>
+                            <li>Diseño exclusivo y único</li>
+                            <li>Garantía de por vida</li>
+                            <li>Estuche de presentación elegante</li>
+                        <?php endif; ?>
+                    </ul>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="alert('Función de compra no implementada en esta demo')">
+                        🛒 Agregar al Carrito
+                    </button>
+                    <button class="btn btn-secondary" onclick="alert('Función de consulta no implementada en esta demo')">
+                        💬 Consultar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Luxury Collection - Timepieces & Jewelry</p>
+            <p>Calidad excepcional • Diseño exclusivo • Elegancia atemporal</p>
+        </div>
+    </footer>
+</body>
+</html>

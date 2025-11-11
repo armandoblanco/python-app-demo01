@@ -2,7 +2,7 @@
 E-commerce de Relojes de Lujo y Joyas
 
 ## Descripción
-Aplicación web de e-commerce para vender relojes de lujo y joyas, desarrollada con Python y Flask. Presenta un catálogo elegante con 10 productos exclusivos, funcionalidad de búsqueda y filtrado por categoría.
+Aplicación web de e-commerce para vender relojes de lujo y joyas, desarrollada con PHP y JavaScript. Presenta un catálogo elegante con 10 productos exclusivos, funcionalidad de búsqueda y filtrado por categoría.
 
 ## Características
 - ✨ Catálogo con 10 productos (5 relojes de lujo y 5 joyas exclusivas)
@@ -14,9 +14,14 @@ Aplicación web de e-commerce para vender relojes de lujo y joyas, desarrollada 
 - 📄 Página de detalle para cada producto
 
 ## Tecnologías
-- **Backend**: Flask 3.0.0
+- **Backend**: PHP 8.3+
 - **Frontend**: HTML5, CSS3, JavaScript
-- **Base de datos**: Sin base de datos (productos en memoria con diccionarios)
+- **Base de datos**: Sin base de datos (productos en memoria con arrays PHP)
+
+## Requisitos Previos
+
+- PHP 8.0 o superior
+- Navegador web moderno
 
 ## Instalación
 
@@ -26,31 +31,30 @@ git clone https://github.com/armandoblanco/python-app-demo01.git
 cd python-app-demo01
 ```
 
-2. Instalar dependencias:
-```bash
-pip install -r requirements.txt
-```
+2. No se requieren dependencias adicionales. PHP viene con todo lo necesario.
 
 ## Ejecución
 
-Ejecutar la aplicación:
+### Opción 1: Servidor PHP integrado (desarrollo)
 ```bash
-python app.py
+php -S localhost:8000
 ```
 
-La aplicación estará disponible en: `http://localhost:5000`
+La aplicación estará disponible en: `http://localhost:8000`
+
+### Opción 2: Servidor web Apache/Nginx (producción)
+Configurar el DocumentRoot apuntando al directorio del proyecto y acceder a través del navegador.
 
 ## Estructura del Proyecto
 ```
 python-app-demo01/
-├── app.py                      # Aplicación Flask principal
-├── requirements.txt            # Dependencias Python
-├── templates/
-│   ├── index.html             # Página principal con catálogo
-│   └── product_detail.html    # Página de detalle del producto
-└── static/
-    ├── css/
-    └── js/
+├── index.php                   # Página principal con catálogo
+├── product_detail.php          # Página de detalle del producto
+├── api_search.php              # API de búsqueda JSON
+├── products.php                # Datos de productos (catálogo)
+└── templates/                  # Templates HTML originales (legacy)
+    ├── index.html
+    └── product_detail.html
 ```
 
 ## Productos Disponibles
@@ -88,11 +92,29 @@ python-app-demo01/
 - Características destacadas
 - Botones de acción (demo)
 
-## API Endpoints
+## Endpoints Disponibles
 
-- `GET /` - Página principal con catálogo
-- `GET /product/<id>` - Detalle de producto específico
-- `GET /api/search?q=<query>&category=<category>` - API de búsqueda JSON
+- `GET /index.php` - Página principal con catálogo
+  - Parámetros: `?category={all|watch|jewelry}&search={query}`
+- `GET /product_detail.php?id={id}` - Detalle de producto específico
+- `GET /api_search.php?q={query}&category={category}` - API de búsqueda JSON
+
+## Ejemplos de Uso
+
+### Búsqueda por categoría
+```
+http://localhost:8000/index.php?category=watch
+```
+
+### Búsqueda por texto
+```
+http://localhost:8000/index.php?search=rolex
+```
+
+### API de búsqueda
+```bash
+curl "http://localhost:8000/api_search.php?q=diamond&category=jewelry"
+```
 
 ## Licencia
 MIT License - Ver archivo [LICENSE](LICENSE) para más detalles
