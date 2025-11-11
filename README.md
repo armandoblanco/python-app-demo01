@@ -1,6 +1,17 @@
 # python-app-demo01
 E-commerce de Relojes de Lujo y Joyas
 
+## 📚 Documentación
+
+**¿Quieres entender cómo funciona el código?** Lee la [Explicación Completa del Código](CODIGO_EXPLICACION.md)
+
+Este documento incluye:
+- Arquitectura detallada de la aplicación
+- Explicación línea por línea del código
+- Diagramas de flujo
+- Ejemplos prácticos
+- Conceptos de programación utilizados
+
 ## Descripción
 Aplicación web de e-commerce para vender relojes de lujo y joyas, desarrollada con Python y Flask. Presenta un catálogo elegante con 10 productos exclusivos, funcionalidad de búsqueda y filtrado por categoría.
 
