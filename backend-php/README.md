@@ -139,10 +139,23 @@ curl http://localhost:8080/api/product.php?id=1
 curl http://localhost:8080/api/categories.php
 ```
 
-### Automated Tests with PHPUnit
+### Automated Tests with Shell Script
+
+Quick test script that verifies all endpoints (13 tests):
 
 ```bash
-# Install dependencies
+# Run the test script
+./test-api.sh
+```
+
+This will test all endpoints and display results. All 13 tests should pass.
+
+### Automated Tests with PHPUnit (Optional)
+
+For more comprehensive testing with PHPUnit:
+
+```bash
+# Install dependencies (requires Composer)
 composer install
 
 # Run all tests
@@ -154,6 +167,8 @@ composer install
 # Run tests with coverage
 ./vendor/bin/phpunit --coverage-html coverage
 ```
+
+**Note:** The shell script (`test-api.sh`) provides equivalent testing without requiring PHPUnit installation.
 
 ## Project Structure
 
@@ -168,6 +183,7 @@ backend-php/
 │   └── ApiTest.php         # PHPUnit tests (13 tests)
 ├── products.php            # Product data and functions
 ├── index.php               # Main router (optional)
+├── test-api.sh            # Shell test script (13 tests) ⭐
 ├── .htaccess              # Apache rewrite rules
 ├── composer.json          # Composer configuration
 ├── phpunit.xml            # PHPUnit configuration
