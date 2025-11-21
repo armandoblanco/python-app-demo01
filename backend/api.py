@@ -265,10 +265,10 @@ def get_products():
             'data': filtered_products,
             'count': len(filtered_products)
         }), 200
-    except Exception:
+    except Exception as e:
         # Log the error internally but don't expose stack trace
         app.logger.error('Error fetching products', exc_info=True)
-        log_audit('GET_PRODUCTS_ERROR', 'Internal server error')
+        log_audit('GET_PRODUCTS_ERROR', f'Internal server error: {str(e)}')
         return jsonify({
             'success': False,
             'error': 'Internal server error while fetching products'
@@ -340,9 +340,9 @@ def get_admin_products():
             'count': len(products),
             'user': current_user
         }), 200
-    except Exception:
+    except Exception as e:
         app.logger.error('Error in admin products endpoint', exc_info=True)
-        log_audit('ADMIN_GET_PRODUCTS_ERROR', 'Internal server error')
+        log_audit('ADMIN_GET_PRODUCTS_ERROR', f'Internal server error: {str(e)}')
         return jsonify({
             'success': False,
             'error': 'Internal server error'
