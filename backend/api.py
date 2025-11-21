@@ -17,6 +17,11 @@ import bleach
 app = Flask(__name__)
 
 # Security configurations
+# In production, JWT_SECRET_KEY MUST be set via environment variable
+# The application will fail to start if not set in production mode
+if os.environ.get('FLASK_ENV') == 'production' and not os.environ.get('JWT_SECRET_KEY'):
+    raise RuntimeError("JWT_SECRET_KEY environment variable must be set in production mode")
+
 app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY', 'dev-secret-key-change-in-production')
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1)
 
@@ -25,6 +30,9 @@ CORS(app)  # Enable CORS for frontend-backend communication
 jwt = JWTManager(app)
 
 # Rate limiting configuration
+# Note: Using in-memory storage for development. In production, use Redis or database-backed storage
+# to persist rate limits across application restarts. Example:
+# storage_uri="redis://localhost:6379"
 limiter = Limiter(
     app=app,
     key_func=get_remote_address,
@@ -175,7 +183,14 @@ def login():
             }), 400
         
         username = sanitize_input(data.get('username', ''), max_length=50)
+        # Validate password length to prevent resource exhaustion
         password = data.get('password', '')
+        if len(password) > 200:
+            log_audit('LOGIN_FAILED', 'Password too long')
+            return jsonify({
+                'success': False,
+                'error': 'Invalid credentials'
+            }), 401
         
         if not username or not password:
             log_audit('LOGIN_FAILED', f'Missing credentials for user: {username}')
@@ -184,9 +199,12 @@ def login():
                 'error': 'Username and password are required'
             }), 400
         
+        # Get demo credentials from environment variables (with defaults for development only)
+        demo_username = os.environ.get('DEMO_USERNAME', 'admin')
+        demo_password = os.environ.get('DEMO_PASSWORD', 'admin123')
+        
         # Simple authentication (in production, use a proper authentication system)
-        # For demo purposes: username='admin', password='admin123'
-        if username == 'admin' and password == 'admin123':
+        if username == demo_username and password == demo_password:
             access_token = create_access_token(identity=username)
             log_audit('LOGIN_SUCCESS', f'User logged in: {username}', user=username)
             return jsonify({

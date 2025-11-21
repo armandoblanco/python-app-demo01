@@ -37,9 +37,16 @@ curl http://localhost:5000/api/admin/products \
 ### 2. Rate Limiting
 - **Implementation**: Flask-Limiter
 - **Purpose**: Prevent API abuse and DDoS attacks
+- **Storage**: In-memory (development), Redis recommended for production
 - **Default Limits**:
   - 200 requests per day
   - 50 requests per hour per IP address
+
+**Production Configuration:**
+For production, use Redis or database-backed storage to persist rate limits across restarts:
+```python
+storage_uri="redis://localhost:6379"
+```
 
 #### Endpoint-Specific Limits:
 - `/api/auth/login`: 5 requests per minute (prevent brute force attacks)
@@ -162,6 +169,13 @@ export FLASK_ENV=production
 ### Generating Secure JWT Secret:
 ```bash
 python -c "import secrets; print(secrets.token_hex(32))"
+```
+
+### Demo Credentials Configuration (Development):
+```bash
+# Optional: Override demo credentials (defaults: admin/admin123)
+export DEMO_USERNAME="your_username"
+export DEMO_PASSWORD="your_password"
 ```
 
 ## Production Deployment Checklist
