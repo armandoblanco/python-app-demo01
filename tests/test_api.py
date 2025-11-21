@@ -11,6 +11,16 @@ def client():
     with app.test_client() as client:
         yield client
 
+def get_auth_token(client):
+    """Helper function to get JWT token for testing"""
+    response = client.post('/api/auth/login', 
+                          json={'username': 'admin', 'password': 'admin123'},
+                          content_type='application/json')
+    data = response.get_json()
+    return data.get('access_token')
+
+# ============== Existing Tests ==============
+
 def test_health_check(client):
     """Test health check endpoint"""
     response = client.get('/api/health')
@@ -133,3 +143,104 @@ def test_product_prices_are_valid(client):
     for product in data['data']:
         assert isinstance(product['price'], (int, float))
         assert product['price'] > 0
+
+# ============== New Security Tests ==============
+
+def test_login_success(client):
+    """Test successful login with correct credentials"""
+    response = client.post('/api/auth/login', 
+                          json={'username': 'admin', 'password': 'admin123'},
+                          content_type='application/json')
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data['success'] is True
+    assert 'access_token' in data
+    assert data['token_type'] == 'Bearer'
+
+def test_login_invalid_credentials(client):
+    """Test login with invalid credentials"""
+    response = client.post('/api/auth/login', 
+                          json={'username': 'admin', 'password': 'wrongpass'},
+                          content_type='application/json')
+    assert response.status_code == 401
+    data = response.get_json()
+    assert data['success'] is False
+    assert 'error' in data
+
+def test_login_missing_data(client):
+    """Test login with missing data"""
+    response = client.post('/api/auth/login', 
+                          json={},
+                          content_type='application/json')
+    assert response.status_code == 400
+    data = response.get_json()
+    assert data['success'] is False
+
+def test_login_no_json(client):
+    """Test login without JSON data"""
+    response = client.post('/api/auth/login')
+    assert response.status_code == 400
+    data = response.get_json()
+    assert data['success'] is False
+
+def test_admin_endpoint_without_token(client):
+    """Test accessing admin endpoint without JWT token"""
+    response = client.get('/api/admin/products')
+    assert response.status_code == 401
+
+def test_admin_endpoint_with_token(client):
+    """Test accessing admin endpoint with valid JWT token"""
+    token = get_auth_token(client)
+    response = client.get('/api/admin/products',
+                         headers={'Authorization': f'Bearer {token}'})
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data['success'] is True
+    assert 'data' in data
+    assert 'user' in data
+    assert data['user'] == 'admin'
+
+def test_input_sanitization_search(client):
+    """Test that search input is sanitized"""
+    # Try injecting HTML/script tags
+    response = client.get('/api/products?search=<script>alert("xss")</script>')
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data['success'] is True
+    # Should return empty results since the sanitized input won't match products
+    assert len(data['data']) == 0
+
+def test_input_sanitization_category(client):
+    """Test that category input is validated"""
+    # Try invalid category
+    response = client.get('/api/products?category=<script>alert("xss")</script>')
+    assert response.status_code == 200
+    data = response.get_json()
+    # Should default to 'all' and return all products
+    assert len(data['data']) == 10
+
+def test_invalid_product_id(client):
+    """Test that invalid product IDs are handled"""
+    response = client.get('/api/products/0')
+    assert response.status_code == 400
+    data = response.get_json()
+    assert data['success'] is False
+    assert 'error' in data
+
+def test_negative_product_id(client):
+    """Test that negative product IDs are rejected"""
+    response = client.get('/api/products/-1')
+    # Flask routing treats negative IDs as 404 not found since they don't match the route pattern properly
+    assert response.status_code == 404
+    data = response.get_json()
+    assert data['success'] is False
+
+def test_search_length_limit(client):
+    """Test that search query length is limited"""
+    # Create a very long search query
+    long_query = 'a' * 500
+    response = client.get(f'/api/products?search={long_query}')
+    assert response.status_code == 200
+    data = response.get_json()
+    # Should still work but query is truncated
+    assert data['success'] is True

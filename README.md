@@ -12,6 +12,13 @@ La aplicación ha sido **rediseñada completamente** con arquitectura desacoplad
 - ✅ **Comunicación via API** con CORS habilitado
 - ✅ **Tests automatizados** con pytest
 - ✅ **Documentación completa** de arquitectura
+- ✅ **Características de seguridad para producción**
+  - Autenticación JWT
+  - Rate limiting
+  - HTTPS enforcement
+  - Content Security Policy
+  - Validación y sanitización de entrada
+  - Logs de auditoría
 
 ### Ventajas de la Nueva Arquitectura
 - 🚀 Desarrollo independiente de frontend y backend
@@ -19,6 +26,7 @@ La aplicación ha sido **rediseñada completamente** con arquitectura desacoplad
 - 🧪 Tests automatizados
 - 🔄 Flexibilidad para múltiples clientes (web, mobile, etc.)
 - 📚 Documentación detallada
+- 🔒 Seguridad lista para producción (JWT, rate limiting, CSP, audit logs)
 
 ## Características
 - ✨ Catálogo con 10 productos (5 relojes de lujo y 5 joyas exclusivas)
@@ -29,10 +37,18 @@ La aplicación ha sido **rediseñada completamente** con arquitectura desacoplad
 - 🖼️ Imágenes placeholder para cada producto
 - 📄 Página de detalle para cada producto
 - 🔌 API RESTful completa
-- ✅ 13 tests automatizados
+- ✅ 24+ tests automatizados
+- 🔒 **Características de seguridad para producción:**
+  - 🔐 Autenticación JWT
+  - ⏱️ Rate limiting en endpoints
+  - 🛡️ HTTPS enforcement
+  - 🔒 Content Security Policy (CSP)
+  - ✅ Validación y sanitización de entrada
+  - 📝 Logs de auditoría completos
 
 ## Tecnologías
 - **Backend**: Flask 3.0.0 + Flask-CORS 4.0.0
+- **Seguridad**: Flask-JWT-Extended 4.6.0, Flask-Limiter 3.5.0, Flask-Talisman 1.1.0, Bleach 6.1.0
 - **Frontend**: HTML5, CSS3, Vanilla JavaScript (ES6+)
 - **Testing**: pytest 7.4.3, pytest-flask 1.3.0
 - **Base de datos**: En memoria (productos en array)
@@ -114,18 +130,25 @@ python-app-demo01/
 
 ### Backend API (Puerto 5000)
 
-| Método | Endpoint | Descripción | Parámetros |
-|--------|----------|-------------|------------|
-| GET | `/api/health` | Health check del servidor | - |
-| GET | `/api/products` | Lista todos los productos | `?category=all\|watch\|jewelry`<br>`?search=término` |
-| GET | `/api/products/<id>` | Detalle de un producto | - |
-| GET | `/api/categories` | Lista de categorías disponibles | - |
+| Método | Endpoint | Descripción | Autenticación | Parámetros |
+|--------|----------|-------------|---------------|------------|
+| GET | `/api/health` | Health check del servidor | No | - |
+| POST | `/api/auth/login` | Autenticación JWT | No | `username`, `password` |
+| GET | `/api/products` | Lista todos los productos | No | `?category=all\|watch\|jewelry`<br>`?search=término` |
+| GET | `/api/products/<id>` | Detalle de un producto | No | - |
+| GET | `/api/categories` | Lista de categorías disponibles | No | - |
+| GET | `/api/admin/products` | Acceso administrativo a productos | **Sí (JWT)** | - |
 
 ### Ejemplos de Uso
 
 ```bash
 # Health check
 curl http://localhost:5000/api/health
+
+# Login para obtener token JWT
+curl -X POST http://localhost:5000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username": "admin", "password": "admin123"}'
 
 # Todos los productos
 curl http://localhost:5000/api/products
@@ -138,6 +161,10 @@ curl http://localhost:5000/api/products?search=rolex
 
 # Producto específico
 curl http://localhost:5000/api/products/1
+
+# Endpoint protegido (requiere JWT)
+curl http://localhost:5000/api/admin/products \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
 
 ## Productos Disponibles
@@ -179,22 +206,32 @@ curl http://localhost:5000/api/products/1
 - 📚 **[ARCHITECTURE.md](ARCHITECTURE.md)** - Arquitectura completa del sistema
 - 📚 **[MIGRATION_GUIDE.md](MIGRATION_GUIDE.md)** - Guía de migración y despliegue
 - 📚 **[COMPONENT_DIAGRAM.md](COMPONENT_DIAGRAM.md)** - Diagramas de componentes
+- 🔒 **[SECURITY_FEATURES.md](SECURITY_FEATURES.md)** - Documentación de características de seguridad
+- 🛡️ **[SECURITY.md](SECURITY.md)** - Política de seguridad y reporte de vulnerabilidades
 
 ## Licencia
 MIT License - Ver archivo [LICENSE](LICENSE) para más detalles
 
 ## Changelog
 
-### v2.0.0 (Actual) - Arquitectura Desacoplada
+### v2.0.0 (Actual) - Arquitectura Desacoplada + Seguridad
 - ✨ Nueva arquitectura frontend-backend separada
 - ✨ API RESTful completa
 - ✨ Frontend SPA independiente
-- ✨ Tests automatizados (13 tests)
+- ✨ Tests automatizados (24 tests)
 - ✨ Documentación completa de arquitectura
 - ✨ CORS habilitado
 - ✨ Búsqueda con debouncing
+- 🔒 **Nuevas características de seguridad:**
+  - Autenticación JWT
+  - Rate limiting en API
+  - HTTPS enforcement (producción)
+  - Content Security Policy
+  - Validación y sanitización de entrada robusta
+  - Logs de auditoría completos
 
 ### v1.0.0 (Anterior) - Monolítica
 - Aplicación monolítica con Flask y Templates
 - Sin tests automatizados
 - Frontend y backend acoplados
+- Sin características de seguridad
