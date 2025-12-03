@@ -97,10 +97,10 @@ class TestProductDetailRoute:
         assert b'Producto no encontrado' in response.data
     
     def test_product_detail_displays_price(self, client):
-        """Test that product price is displayed"""
+        """Test that product price is displayed with comma formatting"""
         response = client.get('/product/1')
         assert response.status_code == 200
-        assert b'12,500' in response.data or b'12500' in response.data
+        assert b'12,500' in response.data
 
 
 class TestAPISearch:
