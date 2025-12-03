@@ -40,11 +40,37 @@ python app.py
 
 La aplicación estará disponible en: `http://localhost:5000`
 
+## Pruebas (Testing)
+
+### Instalación de dependencias de testing
+```bash
+pip install -r requirements-dev.txt
+```
+
+### Ejecutar pruebas
+```bash
+# Ejecución básica
+pytest test_app.py -v
+
+# Con reporte de cobertura y HTML
+pytest test_app.py -v --cov=app --cov-report=html --cov-report=term --html=test-report.html --self-contained-html
+```
+
+### Resultados
+- ✅ **33 tests** implementados
+- ✅ **97% de cobertura** de código
+- ✅ Reportes HTML generados en `htmlcov/` y `test-report.html`
+
+Ver documentación completa en [TESTS.md](TESTS.md)
+
 ## Estructura del Proyecto
 ```
 python-app-demo01/
 ├── app.py                      # Aplicación Flask principal
+├── test_app.py                 # Suite de pruebas (33 tests)
 ├── requirements.txt            # Dependencias Python
+├── requirements-dev.txt        # Dependencias de testing
+├── TESTS.md                    # Documentación de pruebas
 ├── templates/
 │   ├── index.html             # Página principal con catálogo
 │   └── product_detail.html    # Página de detalle del producto
