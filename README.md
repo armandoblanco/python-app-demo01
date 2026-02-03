@@ -8,7 +8,10 @@ Aplicación web de e-commerce para vender relojes de lujo y joyas, desarrollada 
 - ✨ Catálogo con 10 productos (5 relojes de lujo y 5 joyas exclusivas)
 - 🔍 Búsqueda dinámica de productos
 - 📁 Filtrado por categoría (Relojes / Joyas)
+- 🛒 Carrito de compras con gestión de cantidades
 - 💰 Precios en USD con formato profesional
+- 🧮 Cálculo automático de impuestos (IVA 19%)
+- 📄 Generación de facturas en PDF
 - 📱 Diseño responsive y elegante (negro, dorado, blanco)
 - 🖼️ Imágenes placeholder para cada producto
 - 📄 Página de detalle para cada producto
@@ -16,6 +19,7 @@ Aplicación web de e-commerce para vender relojes de lujo y joyas, desarrollada 
 ## Tecnologías
 - **Backend**: Flask 3.0.0
 - **Frontend**: HTML5, CSS3, JavaScript
+- **PDF Generation**: ReportLab 4.0.7
 - **Base de datos**: Sin base de datos (productos en memoria con diccionarios)
 
 ## Instalación
@@ -35,6 +39,12 @@ pip install -r requirements.txt
 
 Ejecutar la aplicación:
 ```bash
+python app.py
+```
+
+Para producción, configure la variable de entorno SECRET_KEY:
+```bash
+export SECRET_KEY=your-secure-random-key
 python app.py
 ```
 
@@ -80,19 +90,40 @@ python-app-demo01/
 - Solo relojes de lujo
 - Solo joyas exclusivas
 
+### Carrito de Compras
+- Agregar productos al carrito
+- Actualizar cantidades
+- Eliminar productos del carrito
+- Cálculo automático de subtotal, impuestos y total
+- Tasa de impuesto del 19% (IVA Chile)
+
+### Facturación
+- Generación automática de facturas en PDF
+- Incluye número de factura único
+- Fecha y hora de emisión
+- Detalle de productos con cantidades y precios
+- Cálculo de impuestos
+- Total a pagar
+
 ### Detalles del Producto
 - Imagen del producto
 - Nombre y categoría
 - Precio en USD
 - Descripción detallada
 - Características destacadas
-- Botones de acción (demo)
+- Botón para agregar al carrito
 
 ## API Endpoints
 
 - `GET /` - Página principal con catálogo
 - `GET /product/<id>` - Detalle de producto específico
+- `GET /cart` - Página del carrito de compras
 - `GET /api/search?q=<query>&category=<category>` - API de búsqueda JSON
+- `GET /api/cart` - Obtener contenido actual del carrito
+- `POST /api/cart/add` - Agregar producto al carrito
+- `POST /api/cart/update` - Actualizar cantidad de producto en carrito
+- `POST /api/cart/remove` - Eliminar producto del carrito
+- `POST /api/invoice/generate` - Generar y descargar factura PDF
 
 ## Licencia
 MIT License - Ver archivo [LICENSE](LICENSE) para más detalles

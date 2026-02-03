@@ -310,12 +310,12 @@
                 </div>
 
                 <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="alert('Función de compra no implementada en esta demo')">
+                    <button class="btn btn-primary" onclick="addToCart({{ product.id }})">
                         🛒 Agregar al Carrito
                     </button>
-                    <button class="btn btn-secondary" onclick="alert('Función de consulta no implementada en esta demo')">
-                        💬 Consultar
-                    </button>
+                    <a href="/cart" class="btn btn-secondary" style="text-decoration: none; display: flex; align-items: center; justify-content: center;">
+                        Ver Carrito
+                    </a>
                 </div>
             </div>
         </div>
@@ -327,5 +327,31 @@
             <p>Calidad excepcional • Diseño exclusivo • Elegancia atemporal</p>
         </div>
     </footer>
+
+    <script>
+        async function addToCart(productId) {
+            try {
+                const response = await fetch('/api/cart/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        product_id: productId,
+                        quantity: 1
+                    })
+                });
+                
+                if (response.ok) {
+                    alert('Producto agregado al carrito exitosamente!');
+                } else {
+                    alert('Error al agregar el producto al carrito');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al agregar el producto al carrito');
+            }
+        }
+    </script>
 </body>
 </html>

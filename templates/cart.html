@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito de Compras - Luxury Collection</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(90deg, #000000 0%, #1a1a1a 100%);
+            padding: 30px 0;
+            border-bottom: 2px solid #FFD700;
+            box-shadow: 0 4px 6px rgba(255, 215, 0, 0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        h1 {
+            color: #FFD700;
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #ffffff;
+            font-size: 1.1em;
+            font-style: italic;
+        }
+
+        /* Back Button */
+        .back-button {
+            display: inline-block;
+            margin: 30px 0;
+            padding: 12px 30px;
+            background: #000000;
+            color: #FFD700;
+            text-decoration: none;
+            border: 2px solid #FFD700;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .back-button:hover {
+            background: #FFD700;
+            color: #000000;
+            transform: translateX(-5px);
+        }
+
+        /* Cart Section */
+        .cart-container {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            border: 2px solid #FFD700;
+            border-radius: 10px;
+            padding: 40px;
+            margin: 30px 0;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 60px 20px;
+            color: #FFD700;
+            font-size: 1.5em;
+        }
+
+        .cart-items {
+            margin-bottom: 30px;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 5px;
+        }
+
+        .cart-item-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+            border: 2px solid #FFD700;
+        }
+
+        .cart-item-details {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-size: 1.3em;
+            color: #FFD700;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .cart-item-price {
+            color: #cccccc;
+            font-size: 1.1em;
+        }
+
+        .cart-item-quantity {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quantity-btn {
+            width: 35px;
+            height: 35px;
+            background: #FFD700;
+            color: #000000;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quantity-btn:hover {
+            background: #ffffff;
+            transform: scale(1.1);
+        }
+
+        .quantity-input {
+            width: 60px;
+            text-align: center;
+            padding: 8px;
+            font-size: 1.1em;
+            border: 2px solid #FFD700;
+            border-radius: 5px;
+            background: #000000;
+            color: #ffffff;
+        }
+
+        .cart-item-total {
+            font-size: 1.3em;
+            color: #ffffff;
+            font-weight: bold;
+            min-width: 120px;
+            text-align: right;
+        }
+
+        .remove-btn {
+            padding: 10px 20px;
+            background: transparent;
+            color: #ff4444;
+            border: 2px solid #ff4444;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .remove-btn:hover {
+            background: #ff4444;
+            color: #ffffff;
+        }
+
+        /* Cart Summary */
+        .cart-summary {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 30px;
+            border-radius: 5px;
+            border: 2px solid #FFD700;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            font-size: 1.2em;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            color: #cccccc;
+        }
+
+        .summary-value {
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        .summary-total {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #FFD700;
+        }
+
+        .summary-total .summary-label,
+        .summary-total .summary-value {
+            font-size: 1.5em;
+            color: #FFD700;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 18px;
+            margin-top: 20px;
+            font-size: 1.2em;
+            background: #FFD700;
+            color: #000000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .checkout-btn:hover {
+            background: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .checkout-btn:disabled {
+            background: #666666;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Footer */
+        footer {
+            background: #000000;
+            color: #FFD700;
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 50px;
+            border-top: 2px solid #FFD700;
+        }
+
+        footer p {
+            margin: 5px 0;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 3px solid rgba(255, 215, 0, 0.3);
+            border-top: 3px solid #FFD700;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .cart-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .cart-item-image {
+                width: 150px;
+                height: 150px;
+            }
+
+            .cart-item-total {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🛒 CARRITO DE COMPRAS 🛒</h1>
+            <p class="subtitle">Revisa tus productos seleccionados</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <a href="/" class="back-button">← Volver al Catálogo</a>
+
+        <div class="cart-container">
+            <div id="cartContent">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Relojes de Lujo, Santiago de Chile</p>
+            <p>Calidad excepcional • Diseño exclusivo • Elegancia atemporal</p>
+        </div>
+    </footer>
+
+    <script>
+        // Load cart on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCart();
+        });
+
+        async function loadCart() {
+            try {
+                const response = await fetch('/api/cart');
+                const data = await response.json();
+                
+                displayCart(data);
+            } catch (error) {
+                console.error('Error loading cart:', error);
+                document.getElementById('cartContent').innerHTML = 
+                    '<div class="empty-cart">Error al cargar el carrito. Por favor, intenta de nuevo.</div>';
+            }
+        }
+
+        function displayCart(data) {
+            const cartContent = document.getElementById('cartContent');
+            
+            if (!data.items || data.items.length === 0) {
+                cartContent.innerHTML = `
+                    <div class="empty-cart">
+                        <p>Tu carrito está vacío</p>
+                        <p style="font-size: 0.8em; margin-top: 20px; color: #ffffff;">
+                            Explora nuestro catálogo y agrega productos exclusivos.
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '<div class="cart-items">';
+            
+            data.items.forEach(item => {
+                html += `
+                    <div class="cart-item">
+                        <img src="${item.product.image}" alt="${item.product.name}" class="cart-item-image">
+                        <div class="cart-item-details">
+                            <div class="cart-item-name">${item.product.name}</div>
+                            <div class="cart-item-price">$${item.product.price.toFixed(2)} c/u</div>
+                        </div>
+                        <div class="cart-item-quantity">
+                            <button class="quantity-btn" onclick="updateQuantity(${item.product.id}, ${item.quantity - 1})">-</button>
+                            <input type="number" class="quantity-input" value="${item.quantity}" 
+                                   onchange="updateQuantity(${item.product.id}, this.value)" min="0">
+                            <button class="quantity-btn" onclick="updateQuantity(${item.product.id}, ${item.quantity + 1})">+</button>
+                        </div>
+                        <div class="cart-item-total">$${item.item_total.toFixed(2)}</div>
+                        <button class="remove-btn" onclick="removeItem(${item.product.id})">Eliminar</button>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            
+            // Cart summary
+            html += `
+                <div class="cart-summary">
+                    <div class="summary-row">
+                        <span class="summary-label">Subtotal:</span>
+                        <span class="summary-value">$${data.subtotal.toFixed(2)}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">Impuesto (${(data.tax_rate * 100).toFixed(0)}%):</span>
+                        <span class="summary-value">$${data.tax.toFixed(2)}</span>
+                    </div>
+                    <div class="summary-row summary-total">
+                        <span class="summary-label">TOTAL:</span>
+                        <span class="summary-value">$${data.total.toFixed(2)}</span>
+                    </div>
+                    <button class="checkout-btn" onclick="generateInvoice()">
+                        📄 Generar Factura PDF
+                    </button>
+                </div>
+            `;
+            
+            cartContent.innerHTML = html;
+        }
+
+        async function updateQuantity(productId, quantity) {
+            quantity = parseInt(quantity);
+            
+            if (quantity < 0) return;
+            
+            try {
+                const response = await fetch('/api/cart/update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        product_id: productId,
+                        quantity: quantity
+                    })
+                });
+                
+                if (response.ok) {
+                    loadCart();
+                }
+            } catch (error) {
+                console.error('Error updating quantity:', error);
+                alert('Error al actualizar la cantidad');
+            }
+        }
+
+        async function removeItem(productId) {
+            if (!confirm('¿Estás seguro de eliminar este producto del carrito?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/cart/remove', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        product_id: productId
+                    })
+                });
+                
+                if (response.ok) {
+                    loadCart();
+                }
+            } catch (error) {
+                console.error('Error removing item:', error);
+                alert('Error al eliminar el producto');
+            }
+        }
+
+        async function generateInvoice() {
+            try {
+                const response = await fetch('/api/invoice/generate', {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'factura.pdf';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                } else {
+                    const data = await response.json();
+                    alert(data.error || 'Error al generar la factura');
+                }
+            } catch (error) {
+                console.error('Error generating invoice:', error);
+                alert('Error al generar la factura');
+            }
+        }
+    </script>
+</body>
+</html>
