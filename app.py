@@ -7,9 +7,10 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, 
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_CENTER, TA_RIGHT
 from io import BytesIO
+import os
 
 app = Flask(__name__)
-app.secret_key = 'your-secret-key-change-in-production'  # Needed for session management
+app.secret_key = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
 
 # Tax rate (19% IVA - typical in Chile)
 TAX_RATE = 0.19
